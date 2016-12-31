@@ -1,0 +1,4 @@
+suites:
+  library_suite:
+    namespace: Jleon\TaxCalendar
+    psr4_prefix: Jleon\TaxCalendar
