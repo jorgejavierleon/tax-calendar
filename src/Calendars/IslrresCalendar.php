@@ -5,21 +5,20 @@ namespace Jleon\TaxCalendar\Calendars;
 
 use Carbon\Carbon;
 
-class IvasesCalendar extends Calendar
+class IslrresCalendar extends Calendar
 {
     /**
-     * Iva semestral para contribuyente especial
+     * Impuesto sobre la renta retenciones contribuyente especial
      *
-     * Calendario Especial primer mes siguiente al semestre
      * @return array
      */
     public function getDates()
     {
-        $days = $this->getSpecialDays(); //return an array of days [ 24, 19 ]
-        $dates = [
-            Carbon::create(date('Y'), 1, $days[1], 0),
-            Carbon::create(date('Y'), 7, $days[0], 0),
-        ];
+        $days = $this->getSpecialDays();
+        for ($i = 1; $i < 13; $i++) {
+            $date = Carbon::create(date('Y'), $i, $days[$i - 1], 0);
+            $dates[] = $date;
+        }
         return $dates;
     }
 
@@ -32,10 +31,10 @@ class IvasesCalendar extends Calendar
     private function getSpecialDays()
     {
         $lastRif = $this->getLastRifDig();
-        $special_calendar = $this->specialCalendarForIva();
+        $special_calendar = $this->specialCalendarForIslr();
         foreach ($special_calendar as $calendar) {
             if (in_array($lastRif, $calendar[0])) {
-                $days = [ $calendar[1][6], $calendar[1][0] ];
+                $days = $calendar[1];
                 break;
             }
         }

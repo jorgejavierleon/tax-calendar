@@ -18,6 +18,7 @@ class IvatCalendar extends Calendar
     public function getDates()
     {
         return [
+            Carbon::create(date('Y'), 1, 15, 0),
             Carbon::create(date('Y'), 4, 15, 0),
             Carbon::create(date('Y'), 7, 15, 0),
             Carbon::create(date('Y'), 10, 15, 0),

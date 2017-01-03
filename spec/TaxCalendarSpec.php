@@ -241,6 +241,7 @@ class TaxCalendarSpec extends ObjectBehavior
         $tribute->getCalendarClassId()->willReturn("ivat");
 
         $this->getDueDates($account, $tribute)->shouldReturn([
+            "15/01/$year", // el correspondiente al ano anterior
             "15/04/$year",
             "15/07/$year",
             "15/10/$year"
@@ -259,6 +260,7 @@ class TaxCalendarSpec extends ObjectBehavior
         $account->getLastRifDig()->willReturn("1");
 
         $this->getDueDates($account, $tribute)->shouldReturn([
+            "24/01/$year",
             "20/04/$year",
             "26/07/$year",
             "18/10/$year"
@@ -277,6 +279,7 @@ class TaxCalendarSpec extends ObjectBehavior
         $tribute->getCalendarClassId()->willReturn("ivas");
 
         $this->getDueDates($account, $tribute)->shouldReturn([
+            "15/01/$year", // el correspondiente al ano anterior
             "15/07/$year",
         ]);
     }
@@ -289,13 +292,12 @@ class TaxCalendarSpec extends ObjectBehavior
     function it_gets_dates_for_ivases($account, $tribute)
     {
         $year = date('Y');
-        $next_year = date('Y') + 1;
         $tribute->getCalendarClassId()->willReturn("ivases");
         $account->getLastRifDig()->willReturn("1");
 
         $this->getDueDates($account, $tribute)->shouldReturn([
+            "24/01/$year",
             "26/07/$year",
-            "24/01/$next_year",
         ]);
     }
 
@@ -332,6 +334,147 @@ class TaxCalendarSpec extends ObjectBehavior
             "04/01/$year", "07/02/$year", "03/03/$year", "07/04/$year",
             "04/05/$year", "07/06/$year", "07/07/$year", "07/08/$year",
             "05/09/$year", "06/10/$year", "03/11/$year", "07/12/$year",
+        ]);
+    }
+
+    /**
+     * ISLR Impuesto sobre la renta naturales
+     *
+     * 3 meses despues del cierre
+     */
+    function it_gets_dates_for_islrn($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrn");
+        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "31/03/2017"
+        ]);
+    }
+
+    /**
+     * ISLR Impuesto sobre la renta juridicas
+     *
+     * 3 meses despues del cierre
+     */
+    function it_gets_dates_for_islrj($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrj");
+        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "31/03/2017"
+        ]);
+    }
+
+    /**
+     * ISLRR Impuesto sobre la renta Retenciones
+     *
+     * 10 primeros dias de cada mes
+     */
+    function it_gets_dates_for_islrr($account, $tribute)
+    {
+        $year = date('Y');
+        $tribute->getCalendarClassId()->willReturn("islrr");
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "10/01/$year", "10/02/$year", "10/03/$year", "10/04/$year",
+            "10/05/$year", "10/06/$year", "10/07/$year", "10/08/$year",
+            "10/09/$year", "10/10/$year", "10/11/$year", "10/12/$year",
+        ]);
+    }
+
+    /**
+     * ISLRRES Impuesto sobre la renta Retenciones contribuyente especial
+     *
+     * Calendario de contribuyente especial
+     */
+    function it_gets_dates_for_islrres($account, $tribute)
+    {
+        $year = date('Y');
+        $tribute->getCalendarClassId()->willReturn("islrres");
+        $account->getLastRifDig()->willReturn("6");
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "06/01/$year", "09/02/$year", "07/03/$year", "11/04/$year",
+            "08/05/$year", "09/06/$year", "11/07/$year", "09/08/$year",
+            "07/09/$year", "10/10/$year", "08/11/$year", "12/12/$year",
+        ]);
+    }
+
+    /**
+     * Impuesto sobre la renta Estimada
+     *
+     * Dentro de la segunda quincena del sexto mes del ejercicio anual.
+     * Si el cierre es el 31-12, el pago seria el 30-6.
+     */
+    function it_gets_dates_for_islrt($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrt");
+        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "30/06/2017",
+        ]);
+    }
+
+    /**
+     * ISLRTES Impuesto sobre la renta Estimada contribuyente especial
+     *
+     * Calendario de contribuyente especial para el sexto
+     * mes después del cierre
+     */
+    function it_gets_dates_for_islrtes($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrtes");
+        $account->getLastRifDig()->willReturn("7");
+        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "13/06/2017"
+        ]);
+    }
+
+    /**
+     * Impuesto sobre la renta estimada pagos parciales
+     *
+     *  6 porciones, cada mes despues del cierre. Si la pirmera porción
+     *  el 30-6, la segunda sera el 31-7; la tercera, 31-8; la cuarta,
+     *  30-9; la quinta, 31-10; y la sexta 30-11.
+     */
+    function it_gets_dates_for_islrtp($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrtp");
+        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "30/06/2017",
+            "31/07/2017",
+            "31/08/2017",
+            "30/09/2017",
+            "31/10/2017",
+            "30/11/2017",
+        ]);
+    }
+
+    /**
+     * Impuesto sobre la renta estimada pagos parciales contribuyente especial
+     *
+     * 6 porciones, cada mes despues del sexto del cierre. Según calendario especial
+     */
+    function it_gets_dates_for_islrtpes($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrtpes");
+        $account->getLastRifDig()->willReturn("3");
+        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "13/06/2017",
+            "17/07/2017",
+            "11/08/2017",
+            "14/09/2017",
+            "13/10/2017",
+            "14/11/2017",
         ]);
     }
 }

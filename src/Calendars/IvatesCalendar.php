@@ -16,9 +16,10 @@ class IvatesCalendar extends Calendar
     {
         $days = $this->getSpecialDays();
         $dates = [
-            Carbon::create(date('Y'), 4, $days[0], 0),
-            Carbon::create(date('Y'), 7, $days[1], 0),
-            Carbon::create(date('Y'), 10, $days[2], 0)
+            Carbon::create(date('Y'), 1, $days[0], 0), //corresponde al trimestre del anterior
+            Carbon::create(date('Y'), 4, $days[1], 0),
+            Carbon::create(date('Y'), 7, $days[2], 0),
+            Carbon::create(date('Y'), 10, $days[3], 0)
         ];
         return $dates;
     }
@@ -35,7 +36,12 @@ class IvatesCalendar extends Calendar
         $special_calendar = $this->specialCalendarForIva();
         foreach ($special_calendar as $calendar) {
             if (in_array($lastRif, $calendar[0])) {
-                $days = [ $calendar[1][3], $calendar[1][6], $calendar[1][9] ];
+                $days = [
+                    $calendar[1][0],
+                    $calendar[1][3],
+                    $calendar[1][6],
+                    $calendar[1][9]
+                ];
                 break;
             }
         }
