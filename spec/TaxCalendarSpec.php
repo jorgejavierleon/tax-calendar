@@ -65,6 +65,7 @@ class TaxCalendarSpec extends ObjectBehavior
         $tribute->getCalendarClassId()->willReturn("inces");
 
         $this->getDueDates($account, $tribute)->shouldReturn([
+            "05/01/$year",
             "05/04/$year",
             "05/07/$year",
             "05/10/$year",
