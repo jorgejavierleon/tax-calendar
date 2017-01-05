@@ -3,6 +3,7 @@
 
 namespace Jleon\TaxCalendar\Calendars;
 
+use Carbon\Carbon;
 
 class IslrnCalendar extends Calendar
 {
@@ -10,19 +11,12 @@ class IslrnCalendar extends Calendar
     /**
      * Impuesto sobre la renta naturales
      *
-     * Durante los tres meses posterior al cierre del
-     * ejercicio fiscal correspondiente. Si cierra
-     * el 31-12, seria 31-3 del siguiente año
+     * 31-3
      *
      * @return array
      */
     public function getDates()
     {
-        return [
-            $this->getClosingDate()
-                ->firstOfMonth()
-                ->addMonth(3)
-                ->endOfMonth()
-        ];
+        return [ Carbon::create(date('Y'), 3, 31, 0) ];
     }
 }

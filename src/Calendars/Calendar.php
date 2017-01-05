@@ -125,4 +125,38 @@ abstract class Calendar
             [ [1,2], [17, 9, 15, 11, 16, 9, 19, 9, 18, 10, 16, 12] ],
         ];
     }
+
+    /**
+     * specialCalendarFor islr autoliquidación anual regulares
+     *
+     * @access protected
+     * @return void
+     */
+    protected function specialCalendarForIslrar()
+    {
+        return [
+            [ [1,2], ['day' => 31, 'month' => 1] ],
+            [ [4,8], ['day' => 16, 'month' => 2] ],
+            [ [0,5], ['day' => 9, 'month' => 3] ],
+            [ [3,7], ['day' => 16, 'month' => 3] ],
+            [ [6,9], ['day' => 24, 'month' => 3] ],
+        ];
+    }
+
+    /**
+     * specialCalendarFor islr autoliquidación anual irregulares
+     *
+     * @access protected
+     * @return void
+     */
+    protected function specialCalendarForIslrai()
+    {
+        return [
+            [ [0,5], [18, 23, 31, 26, 17, 26, 19, 23, 19, 24, 17, 17, 26] ],
+            [ [6,9], [19, 22, 31, 25, 18, 23, 20, 22, 20, 23, 16, 20, 22] ],
+            [ [3,7], [20, 12, 31, 24, 13, 22, 21, 21, 21, 20, 13, 21, 21] ],
+            [ [4,8], [23, 20, 31, 21, 22, 21, 25, 18, 22, 19, 11, 22, 20] ],
+            [ [1,2], [24, 17, 31, 20, 23, 20, 26, 17, 25, 18, 10, 23, 19] ],
+        ];
+    }
 }

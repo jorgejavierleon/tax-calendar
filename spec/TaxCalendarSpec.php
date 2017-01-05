@@ -339,22 +339,73 @@ class TaxCalendarSpec extends ObjectBehavior
     }
 
     /**
-     * ISLR Impuesto sobre la renta naturales
+     * ISLRN Impuesto sobre la renta naturales
      *
-     * 3 meses despues del cierre
+     * 31/03
      */
     function it_gets_dates_for_islrn($account, $tribute)
     {
+        $year = date('Y');
         $tribute->getCalendarClassId()->willReturn("islrn");
-        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
 
         $this->getDueDates($account, $tribute)->shouldReturn([
-            "31/03/2017"
+            "31/03/$year"
         ]);
     }
 
     /**
-     * ISLR Impuesto sobre la renta juridicas
+     * ISLRNP Impuesto sobre la renta naturales porciones
+     *
+     * 31/03, 20/04, 05/05
+     */
+    function it_gets_dates_for_islrnp($account, $tribute)
+    {
+        $year = date('Y');
+        $tribute->getCalendarClassId()->willReturn("islrnp");
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "31/03/$year",
+            "20/04/$year",
+            "05/05/$year"
+        ]);
+    }
+
+    /**
+     * ISLRNES Impuesto sobre la renta naturales especiales Regulares
+     *
+     * Calendario especial para contribuyentes
+     * regulares con fecha de cierre en Dicienmbre
+     */
+    function it_gets_dates_for_islrnes($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrnes");
+        $account->getLastRifDig()->willReturn("0");
+        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "09/03/2017",
+        ]);
+    }
+
+    /**
+     * ISLRNES Impuesto sobre la renta naturales especiales irregulares
+     *
+     * Calendario especial para contribuyentes
+     * irregulares con fecha de cierre distinta a Dicienmbre
+     */
+    function it_gets_dates_for_islrnes_irregulares($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrnes");
+        $account->getLastRifDig()->willReturn("0");
+        $account->getClosingDate()->willReturn(['month' => 1, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "26/04/2017",
+        ]);
+    }
+
+    /**
+     * ISLRJ Impuesto sobre la renta juridicas
      *
      * 3 meses despues del cierre
      */
@@ -365,6 +416,40 @@ class TaxCalendarSpec extends ObjectBehavior
 
         $this->getDueDates($account, $tribute)->shouldReturn([
             "31/03/2017"
+        ]);
+    }
+
+    /**
+     * ISLRJES Impuesto sobre la renta jurídicos especiales Regulares
+     *
+     * Calendario especial para contribuyentes
+     * regulares con fecha de cierre en Dicienmbre
+     */
+    function it_gets_dates_for_islrjes($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrjes");
+        $account->getLastRifDig()->willReturn("0");
+        $account->getClosingDate()->willReturn(['month' => 12, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "09/03/2017",
+        ]);
+    }
+
+    /**
+     * ISLRJES Impuesto sobre la renta jurídicos especiales irregulares
+     *
+     * Calendario especial para contribuyentes
+     * irregulares con fecha de cierre distinta a Dicienmbre
+     */
+    function it_gets_dates_for_islrjes_irregulares($account, $tribute)
+    {
+        $tribute->getCalendarClassId()->willReturn("islrjes");
+        $account->getLastRifDig()->willReturn("0");
+        $account->getClosingDate()->willReturn(['month' => 1, 'day' => 31, 'year' => 2017]);
+
+        $this->getDueDates($account, $tribute)->shouldReturn([
+            "26/04/2017",
         ]);
     }
 
